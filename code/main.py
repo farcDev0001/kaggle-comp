@@ -7,15 +7,17 @@ from sklearn.metrics import r2_score
 
 
 def getData():
-    return pd.read_csv('../ignore/data.csv').drop(columns=['x','y','z','table'])
+    return pd.read_csv('../ignore/data.csv').drop(columns=['x','y','z',])
 
 def getDataTest():
-    return pd.read_csv('../ignore/test.csv').drop(columns=['id','x','y','z','table'])
+    return pd.read_csv('../ignore/test.csv').drop(columns=['id','x','y','z',])
 
 def getDataForTraining(data):
     nDf= convertToNumber(data[['cut','color','clarity']])
     for col in nDf.columns:
         data[col]=nDf[col]
+    data.carat=data.carat.apply(lambda n:n*10**5)
+
     return data
 
 def trainScoreNpredict(data):
@@ -33,6 +35,7 @@ def trainScoreNpredict(data):
 
 def main():
     data=getDataForTraining(getData())
+    data.to_csv('../ignore/dataPrepared.csv')
     dictRes=trainScoreNpredict(data)
     print(dictRes)
     test= getDataForTraining(getDataTest())
