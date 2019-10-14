@@ -7,6 +7,7 @@ import dask.dataframe as dd
 from dask_ml.model_selection import train_test_split
 from dask.distributed import Client, progress
 import joblib
+from main import getData,getDataForTraining
 
 def getLocalDaskCLusterLenov():
     return Client(n_workers=4, threads_per_worker=2, memory_limit='2GB')
@@ -38,6 +39,8 @@ def createRamdomForestGrid():
 def searchBestForest(params,client):
     c=client
     print(c)
+    data=getDataForTraining(getData())
+    data.to_csv('../ignore/dataPrepared.csv')
     data=dd.read_csv('../ignore/dataPrepared.csv').drop(columns='Unnamed: 0')
     X_train, X_test, y_train,y_test = train_test_split(data.drop(columns='price'), data.price, test_size=0.2)
     [ele.compute() for ele in [X_train, X_test, y_train,y_test]]
